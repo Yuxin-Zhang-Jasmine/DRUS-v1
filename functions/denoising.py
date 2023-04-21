@@ -1,7 +1,5 @@
 import torch
 from tqdm import tqdm
-import torchvision.utils as tvu
-import os
 
 def compute_alpha(beta, t):
     beta = torch.cat([torch.zeros(1).to(beta.device), beta], dim=0)
@@ -49,7 +47,6 @@ def efficient_generalized_steps(x, seq, model, b, H_funcs, y_0, sigma_0, etaB, e
             at = compute_alpha(b, t.long())
             at_next = compute_alpha(b, next_t.long())
             xt = xs[-1].to('cuda')
-            # xt = xt.expand(1, 3, 256, 256) # todo : repeat xt to 3 channels
             if cls_fn == None:
                 et = model(xt, t)
             else:
@@ -61,10 +58,6 @@ def efficient_generalized_steps(x, seq, model, b, H_funcs, y_0, sigma_0, etaB, e
                 et = et[:, :3]
             if et.size(1) == 2:
                 et = et[:, :1]
-            # et = torch.mean(et, 1, True) # todo : average of et
-            # et = et.expand(1, 3, 256, 256) # todo : average of et
-
-            # xt = torch.mean(xt, 1, True)  # todo : average of xt
             x0_t = (xt - et * (1 - at).sqrt()) / at.sqrt()
 
             #variational inference conditioned on y
@@ -93,15 +86,9 @@ def efficient_generalized_steps(x, seq, model, b, H_funcs, y_0, sigma_0, etaB, e
             #missing pixels
             Vt_xt_mod_next = V_t_x0 + sigma_tilde_nextC * H_funcs.Vt(et) + std_nextC * torch.randn_like(V_t_x0)
 
-            #less noisy than y (after)  # TODO : change the middle case in equ(7)
+            #less noisy than y (after)
             Vt_xt_mod_next[:, cond_after] = \
                 V_t_x0[:, cond_after] + sigma_tilde_nextA * ((U_t_y - SVt_x0) / sigma_0)[:, cond_after_lite] + std_nextA * torch.randn_like(V_t_x0[:, cond_after])
-            ##-----------if want to avoid using missing pixel equation--(needs more time-steps to denoise)--------------
-            ## don't forget to add a "~" operator before "falses" at line80 (for cond_after)
-            # pad = torch.zeros([1, V_t_x0.shape[1] - singulars.shape[0]], device=xt.device)
-            # Vt_xt_mod_next[:, cond_after] = \
-            #     V_t_x0[:, cond_after] + torch.cat([sigma_tilde_nextA * ((U_t_y - SVt_x0) / sigma_0)[:, cond_after_lite],pad],dim=1) + std_nextA * torch.randn_like(V_t_x0[:, cond_after])
-            ##---------------------------------------------------------------------------------------------------------
 
             #noisier than y (before)
             Vt_xt_mod_next[:, cond_before] = \

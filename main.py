@@ -7,7 +7,6 @@ import sys
 import os
 import torch
 import numpy as np
-import torch.utils.tensorboard as tb
 
 from runners.diffusion import Diffusion
 

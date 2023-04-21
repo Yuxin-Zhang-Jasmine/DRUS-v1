@@ -44,29 +44,3 @@ def download(url, local_path, chunk_size=1024):
                     if data:
                         f.write(data)
                         pbar.update(chunk_size)
-
-
-def md5_hash(path):
-    with open(path, "rb") as f:
-        content = f.read()
-    return hashlib.md5(content).hexdigest()
-
-
-def get_ckpt_path(name, root=None, check=False, prefix='exp'):
-    if 'church_outdoor' in name:
-        name = name.replace('church_outdoor', 'church')
-    assert name in URL_MAP
-    # Modify the path when necessary
-    cachedir = os.environ.get("XDG_CACHE_HOME", os.path.join(prefix, "logs/"))
-    root = (
-        root
-        if root is not None
-        else os.path.join(cachedir, "diffusion_models_converted")
-    )
-    path = os.path.join(root, CKPT_MAP[name])
-    if not os.path.exists(path) or (check and not md5_hash(path) == MD5_MAP[name]):
-        print("Downloading {} model from {} to {}".format(name, URL_MAP[name], path))
-        download(URL_MAP[name], path)
-        md5 = md5_hash(path)
-        assert md5 == MD5_MAP[name], md5
-    return path

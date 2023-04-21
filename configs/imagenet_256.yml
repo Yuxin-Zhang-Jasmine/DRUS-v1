@@ -1,7 +1,7 @@
 data:
     dataset: "ImageNet"
     image_size: 256
-    channels: 3                         #todo
+    channels: 1                         #todo
     logit_transform: false
     uniform_dequantization: false
     gaussian_dequantization: false
@@ -12,8 +12,8 @@ data:
     out_of_dist: False
 
 model:
-    type: "openai"
-    in_channels: 3                      #todo
+    problem_model: "DRUS"   #todo: "WDRUS"
+    in_channels: 1                      #todo
     out_channels: 1
     num_channels: 256 #192
     num_heads: 4

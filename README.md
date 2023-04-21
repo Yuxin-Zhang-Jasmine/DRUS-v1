@@ -11,10 +11,11 @@ The models and datasets are placed in the `exp/` folder as follows:
 ├── datasets # all dataset files
 ├── logs # contains checkpoints produced during training
 │   ├── imagenet # ImageNet checkpoint files (2.2GB for each)
-│   │   ├── 256x256_diffusion_uncond_RGB.pt
-│   │   ├── 256x256_diffusion_uncond_Gray.pt
+│   │   ├── Gray
+|   |   |   |──256x256_diffusion_uncond.pt
+│   │   ├── RGB
+|   |   |   |──256x256_diffusion_uncond.pt
 ├── image_samples # contains generated samples
-└── imagenet_val_1k.txt # list of the 1k images used in ImageNet-1K.
 ```
 
 ### Sampling from the model

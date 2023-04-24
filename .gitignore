@@ -2,3 +2,9 @@
 __pycache__/
 *.pth
 exp/
+
+MATLAB/workInthisDirectory/picmus/Evaluation/database/
+MATLAB/workInthisDirectory/picmus/BH/svd/
+MATLAB/workInthisDirectory/picmus/CBH/svd/
+MATLAB/workInthisDirectory/simulation/svd/
+

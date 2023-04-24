@@ -1,0 +1,52 @@
+#C1 
+
+Mean resolution scores (axial & lateral): 0.31 	 0.43
+
+Vertical targets (axial & lateral) 
+0.76 	 2.83
+0.25 	 0.29
+0.27 	 0.40
+0.20 	 0.29
+0.18 	 0.27
+0.23 	 0.29
+0.44 	 0.23
+0.57 	 0.35
+
+Horizontal targets at 2 cm (axial & lateral) 
+0.33 	 0.33
+0.22 	 0.38
+0.27 	 0.34
+0.27 	 0.40
+0.26 	 0.31
+0.24 	 0.38
+0.30 	 0.34
+
+Horizontal targets at 4 cm (axial & lateral) 
+0.38 	 0.26
+0.12 	 0.29
+0.45 	 0.27
+0.44 	 0.23
+0.25 	 0.29
+0.12 	 0.29
+0.37 	 0.27
+
+PENALITY: -40
+Distorsion 
+
+#END
+
+#C11 
+
+
+#END
+
+#C75 
+
+
+#END
+
+#BONUS-NONE 
+
+
+#END
+

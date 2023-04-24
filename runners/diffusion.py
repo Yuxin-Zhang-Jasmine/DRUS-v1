@@ -112,6 +112,8 @@ class Diffusion(object):
         deg = args.deg
         H_funcs = None
         import mat73
+
+        print(f'Loading the SVD of the degradation matrix')
         if deg == 'us0':  # TODO 1-1: change H function
             from functions.svd_replacement import ultrasound0
 
@@ -148,9 +150,10 @@ class Diffusion(object):
         else:
             raise ValueError
 
-        # print(f'Dataset has size {len()}')
+
+        idx_so_far = 0
+        print(f'Start restoration')
         for _ in range(len(dasLst)):
-            idx_so_far = 0
             dasSaveName = dasLst[idx_so_far] + '.mat'
             if self.config.model.problem_model == "DRUS":
                 y_0 = torch.from_numpy(mat73.loadmat('/home/user/Documents/MATLAB/MICCAI/picmus/BH/yd/' + dasSaveName)['By'])
@@ -183,7 +186,7 @@ class Diffusion(object):
                             {'x': x[i][j].detach().cpu().numpy()})
 
             idx_so_far += y_0.shape[0]
-
+            print(f'Finish {idx_so_far}')
     def sample_image(self, x, model, H_funcs, y_0, gamma, last=False, cls_fn=None, classes=None):
         skip = self.num_timesteps // self.args.timesteps
         seq = range(0, self.num_timesteps, skip)

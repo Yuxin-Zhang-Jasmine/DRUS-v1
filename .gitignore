@@ -2,9 +2,15 @@
 __pycache__/
 *.pth
 exp/
-
+MATLAB/PICMUS/database/
 MATLAB/workInthisDirectory/picmus/Evaluation/database/
 MATLAB/workInthisDirectory/picmus/BH/svd/
 MATLAB/workInthisDirectory/picmus/CBH/svd/
 MATLAB/workInthisDirectory/simulation/svd/
+MATLAB/workInthisDirectory/picmus/BH/yd/
+MATLAB/workInthisDirectory/picmus/CBH/yd/
+MATLAB/workInthisDirectory/simulation/SimulationResults/medical_Bivertical/1/yd/
+MATLAB/workInthisDirectory/simulation/SimulationResults/medical_Bivertical/2/yd/
+
+
 

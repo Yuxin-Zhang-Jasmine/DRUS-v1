@@ -86,15 +86,18 @@ class Diffusion(object):
         if self.config.model.use_fp16:
             model.convert_to_fp16()
         if self.config.model.in_channels == 3:
-            ckpt = os.path.join(self.args.exp, 'logs/imagenet/RGB/%dx%d_diffusion_uncond.pt' % (
-                self.config.data.image_size, self.config.data.image_size))
+            ckpt = os.path.join(self.args.exp, 'logs/imagenet/RGB/', self.config.model.name)
+            print('logs/imagenet/RGB/' + self.config.model.name)
             if not os.path.exists(ckpt):
+                print('The model does not exist, downloading...')
                 download(
                     'https://openaipublic.blob.core.windows.net/diffusion/jul-2021/%dx%d_diffusion_uncond.pt' % (
                         self.config.data.image_size, self.config.data.image_size), ckpt)
-        elif self.config.model.in_channels == 1:
-            ckpt = os.path.join(self.args.exp, 'logs/imagenet/Gray/%dx%d_diffusion_uncond.pt' % (
-                self.config.data.image_size, self.config.data.image_size))
+        elif self.config.model.in_channels == 1:  # todo: for the model with out_channel == 1 (won't happen for now)
+            ckpt = os.path.join(self.args.exp, 'logs/imagenet/Gray/', self.config.model.name)
+            print('logs/imagenet/Gray/' + self.config.model.name)
+            # ckpt = os.path.join(self.args.exp, 'logs/imagenet/Gray/%dx%d_diffusion_uncond.pt' % (
+            #     self.config.data.image_size, self.config.data.image_size))
 
         else:
             raise ValueError
@@ -112,8 +115,9 @@ class Diffusion(object):
         deg = args.deg
         H_funcs = None
         import mat73
-
-        print(f'Loading the SVD of the degradation matrix')
+        print("data channels : " + str(self.config.data.channels))
+        print("model in_channels : " + str(self.config.model.in_channels))
+        print(f'Loading the SVD of the degradation matrix (' + self.config.model.problem_model + ')')
         if deg == 'us0':  # TODO 1-1: change H function
             from functions.svd_replacement import ultrasound0
 
@@ -138,8 +142,6 @@ class Diffusion(object):
             print("ERROR: degradation type not supported")
             quit()
 
-
-
         from scipy.io import savemat
         # =============================== MICCAI picmus hyperparameter: gamma =======================================
         dasLst = ['simu_reso', 'simu_cont', 'expe_reso', 'expe_cont']
@@ -149,23 +151,108 @@ class Diffusion(object):
             gammaLst = [4.6, 7.1, 2.2, 5.5]
         else:
             raise ValueError
+        # =============================== After MICCAI, testing gamma sensitivity====================================
+        dasLst = ['simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
 
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont',
+                  'simu_reso', 'simu_cont', 'expe_reso', 'expe_cont']
+        if self.config.model.problem_model == "DRUS":
+            gammaLst = [25 - 5, 50 - 5, 75 - 5, 20 - 5,
+                        25 + 5, 50 + 5, 75 + 5, 20 + 5,
+
+                        25 - 10, 50 - 10, 75 - 10, 20 - 10,
+                        25 + 10, 50 + 10, 75 + 10, 20 + 10,
+
+                        25 - 15, 50 - 15, 75 - 15, 20 - 15,
+                        25 + 15, 50 + 15, 75 + 15, 20 + 15,
+
+                        25 - 20, 50 - 20, 75 - 20, 20 - 20,
+                        25 + 20, 50 + 20, 75 + 20, 20 + 20,
+
+                        25 - 25, 50 - 25, 75 - 25, 20 - 25,
+                        25 + 25, 50 + 25, 75 + 25, 20 + 25,
+
+                        25 - 30, 50 - 30, 75 - 30, 20 - 30,
+                        25 + 30, 50 + 30, 75 + 30, 20 + 30,
+
+                        25 - 35, 50 - 35, 75 - 35, 20 - 35,
+                        25 + 35, 50 + 35, 75 + 35, 20 + 3.5,
+
+                        25 - 40, 50 - 40, 75 - 40, 20 - 40,
+                        25 + 40, 50 + 40, 75 + 40, 20 + 40,
+
+                        25 - 45, 50 - 45, 75 - 45, 20 - 45,
+                        25 + 45, 50 + 45, 75 + 45, 20 + 45]
+        elif self.config.model.problem_model == "WDRUS":
+            gammaLst = [4.6 - 0.5, 7.1 - 0.5, 2.2 - 0.5, 5.5 - 0.5,
+                        4.6 + 0.5, 7.1 + 0.5, 2.2 + 0.5, 5.5 + 0.5,
+
+                        4.6 - 1, 7.1 - 1, 2.2 - 1, 5.5 - 1,
+                        4.6 + 1, 7.1 + 1, 2.2 + 1, 5.5 + 1,
+
+                        4.6 - 1.5, 7.1 - 1.5, 2.2 - 1.5, 5.5 - 1.5,
+                        4.6 + 1.5, 7.1 + 1.5, 2.2 + 1.5, 5.5 + 1.5,
+
+                        4.6 - 2, 7.1 - 2, 2.2 - 2, 5.5 - 2,
+                        4.6 + 2, 7.1 + 2, 2.2 + 2, 5.5 + 2,
+
+                        4.6 - 2.5, 7.1 - 2.5, 2.2 - 2.5, 5.5 - 2.5,
+                        4.6 + 2.5, 7.1 + 2.5, 2.2 + 2.5, 5.5 + 2.5,
+
+                        4.6 - 3, 7.1 - 3, 2.2 - 3, 5.5 - 3,
+                        4.6 + 3, 7.1 + 3, 2.2 + 3, 5.5 + 3,
+
+                        4.6 - 3.5, 7.1 - 3.5, 2.2 - 3.5, 5.5 - 3.5,
+                        4.6 + 3.5, 7.1 + 3.5, 2.2 + 3.5, 5.5 + 3.5,
+
+                        4.6 - 4, 7.1 - 4, 2.2 - 4, 5.5 - 4,
+                        4.6 + 4, 7.1 + 4, 2.2 + 4, 5.5 + 4,
+
+                        4.6 - 4.5, 7.1 - 4.5, 2.2 - 4.5, 5.5 - 4.5,
+                        4.6 + 4.5, 7.1 + 4.5, 2.2 + 4.5, 5.5 + 4.5]
+        else:
+            raise ValueError
 
         idx_so_far = 0
         print(f'Start restoration')
         for _ in range(len(dasLst)):
             dasSaveName = dasLst[idx_so_far] + '.mat'
             if self.config.model.problem_model == "DRUS":
-                y_0 = torch.from_numpy(mat73.loadmat('/home/user/Documents/MATLAB/MICCAI/picmus/BH/yd/' + dasSaveName)['By'])
+                y_0 = torch.from_numpy(
+                    mat73.loadmat('/home/user/Documents/MATLAB/MICCAI/picmus/BH/yd/' + dasSaveName)['By'])
             elif self.config.model.problem_model == "WDRUS":
-                y_0 = torch.from_numpy(mat73.loadmat('/home/user/Documents/MATLAB/MICCAI/picmus/CBH/yd/' + dasSaveName)['CBy'])
+                y_0 = torch.from_numpy(
+                    mat73.loadmat('/home/user/Documents/MATLAB/MICCAI/picmus/CBH/yd/' + dasSaveName)['CBy'])
             y_0 = (y_0.view(1, -1)).repeat(1, config.data.channels).to(self.device)
 
             gamma = gammaLst[idx_so_far] * 1
+            if gamma <= 0:
+                gamma = 0.1
             if self.config.model.in_channels == 3:
                 gamma = gamma * sqrt(3)
-        # ===========================================================================================================
-
+            # ===========================================================================================================
 
             ##Begin DDRM
             x = torch.randn(
@@ -187,6 +274,7 @@ class Diffusion(object):
 
             idx_so_far += y_0.shape[0]
             print(f'Finish {idx_so_far}')
+
     def sample_image(self, x, model, H_funcs, y_0, gamma, last=False, cls_fn=None, classes=None):
         skip = self.num_timesteps // self.args.timesteps
         seq = range(0, self.num_timesteps, skip)

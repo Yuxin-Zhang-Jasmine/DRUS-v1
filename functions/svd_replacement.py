@@ -68,7 +68,6 @@ class H_functions:
         temp[:, :singulars.shape[0]] = temp[:, :singulars.shape[0]] / singulars
         return self.V(self.add_zeros(temp))
 
-#a memory inefficient implementation for any general degradation H
 
 class ultrasound1(H_functions):
     def __init__(self, channels, lbd, V, device):
@@ -146,63 +145,3 @@ class ultrasound0(H_functions):
         # out[:, :self._U.shape[0]*3] = vec.clone().reshape(vec.shape[0], -1)
         # return out
 
-#Inpainting
-class Inpainting(H_functions):
-    def __init__(self, channels, img_dim, missing_indices, device):
-        self.channels = channels
-        self.img_dim = img_dim
-        self._singulars = torch.ones(channels * img_dim**2 - missing_indices.shape[0]).to(device)
-        self.missing_indices = missing_indices
-        self.kept_indices = torch.Tensor([i for i in range(channels * img_dim**2) if i not in missing_indices]).to(device).long()
-
-    def V(self, vec):
-        temp = vec.clone().reshape(vec.shape[0], -1)
-        out = torch.zeros_like(temp)
-        out[:, self.kept_indices] = temp[:, :self.kept_indices.shape[0]]
-        out[:, self.missing_indices] = temp[:, self.kept_indices.shape[0]:]
-        return out.reshape(vec.shape[0], -1, self.channels).permute(0, 2, 1).reshape(vec.shape[0], -1)
-
-    def Vt(self, vec):
-        temp = vec.clone().reshape(vec.shape[0], self.channels, -1).permute(0, 2, 1).reshape(vec.shape[0], -1)
-        out = torch.zeros_like(temp)
-        out[:, :self.kept_indices.shape[0]] = temp[:, self.kept_indices]
-        out[:, self.kept_indices.shape[0]:] = temp[:, self.missing_indices]
-        return out
-
-    def U(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def Ut(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def singulars(self):
-        return self._singulars
-
-    def add_zeros(self, vec):
-        temp = torch.zeros((vec.shape[0], self.channels * self.img_dim**2), device=vec.device)
-        reshaped = vec.clone().reshape(vec.shape[0], -1)
-        temp[:, :reshaped.shape[1]] = reshaped
-        return temp
-
-#Denoising
-class Denoising(H_functions):
-    def __init__(self, channels, img_dim, device):
-        self._singulars = torch.ones(channels * img_dim**2, device=device)
-
-    def V(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def Vt(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def U(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def Ut(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)
-
-    def singulars(self):
-        return self._singulars
-
-    def add_zeros(self, vec):
-        return vec.clone().reshape(vec.shape[0], -1)

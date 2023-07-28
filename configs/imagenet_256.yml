@@ -12,9 +12,9 @@ data:
     out_of_dist: False
 
 model:
-    name: "model006000.pt"
-    problem_model: "DRUS"   #todo: "WDRUS"
-    in_channels: 3                      #todo
+    name: "model000000.pt"           # model006000.pt for "DRUS/WDRUS"(picmus), model000000.pt for "HtH/CHtH"(synthetic)
+    problem_model: "CHtH"            # select from [ "DRUS" || "WDRUS" || "HtH" || "CHtH" ]
+    in_channels: 3                   # todo
     out_channels: 1
     num_channels: 256 #192
     num_heads: 4

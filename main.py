@@ -31,6 +31,12 @@ def parse_args_and_config():
         "Will be the name of the log folder.",
     )
     parser.add_argument(
+        "--matlab_path",
+        type=str,
+        required=True,
+        help="MATLAB path where the 3 folders SVD, Results, PICMUS are stored"
+    )
+    parser.add_argument(
         "--comment", type=str, default="", help="A string for experiment comment"
     )
     parser.add_argument(
@@ -48,7 +54,7 @@ def parse_args_and_config():
         "-i",
         "--image_folder",
         type=str,
-        default="images",
+        default="us",
         help="The folder name of samples",
     )
     parser.add_argument(
@@ -59,12 +65,12 @@ def parse_args_and_config():
     parser.add_argument(
         "--timesteps", type=int, default=1000, help="number of steps involved"
     )
-    parser.add_argument(
-        "--deg", type=str, required=True, help="Degradation"
-    )
-    parser.add_argument(
-        "--sigma_0", type=float, required=True, help="Sigma_0"
-    )
+    # parser.add_argument(
+    #     "--deg", type=str, required=True, help="Degradation"
+    # )
+    # parser.add_argument(
+    #     "--sigma_0", type=float, required=True, help="Sigma_0"
+    # )
     parser.add_argument(
         "--eta", type=float, default=0.85, help="Eta"
     )
